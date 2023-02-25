@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import Head from 'next/head';
 import Image from 'next/image';
 import { Inter } from 'next/font/google';
@@ -6,6 +7,23 @@ import styles from '@/styles/Home.module.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
+  const [liffObject, setLiffObject] = useState<any>(null)
+
+  useEffect(() => {
+    import('@line/liff').then((liff: any) => {
+      liff
+        .init({ liffId: process.env.NEXT_PUBLIC_LIFF_ID })
+        .then(() => {
+          setLiffObject(liff)
+          if (liff.isLoggedIn()) {
+            // ログインの確認を取れたら
+          }
+        })
+        .catch((err: any) => {
+          console.error({ err })
+        })
+    })
+  }, [])
   return (
     <>
       <Head>
