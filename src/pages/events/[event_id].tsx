@@ -2,6 +2,20 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import { useState, ChangeEvent } from 'react';
 
+interface ParticipantObj {
+  id: string;
+  eventId: string;
+  eventName: string;
+  paidAt?: string;
+  participantFee: number;
+  payOrderId: string;
+  payTransactionId: string;
+  paymentUrl: string;
+  user: any;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface EventObj {
   id: string;
   title: string;
@@ -23,11 +37,21 @@ const Event = (props: any) => {
 
   const url = process.env.NEXT_PUBLIC_API_ROOT_URL || '';
   if (router.query.event_id) {
-    const eventsResponse = axios.get(`${url}/events/${router.query.event_id}`).then((res) => {
+    axios.get(`${url}/events/${router.query.event_id}`).then((res) => {
       console.log(res.data);
       setEvent(res.data);
     });
   }
+
+  const handlePaymentSubmit = async () => {
+    const url = process.env.NEXT_PUBLIC_API_ROOT_URL || '';
+    const headers = {
+      authorization: ['Bearer 1234'],
+    };
+    if (event.participants) {
+      router.replace(event.participants[0].paymentUrl);
+    }
+  };
 
   const handleLikeSubmit = async () => {
     const url = process.env.NEXT_PUBLIC_API_ROOT_URL || '';
@@ -81,6 +105,17 @@ const Event = (props: any) => {
       >
         参加する
       </button>
+      <div>
+        <button
+          className='focus:shadow-outline rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700 focus:outline-none'
+          type='button'
+          onClick={() => {
+            handlePaymentSubmit();
+          }}
+        >
+          参加費を支払う
+        </button>
+      </div>
     </>
   );
 };

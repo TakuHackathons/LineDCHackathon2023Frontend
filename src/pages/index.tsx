@@ -22,6 +22,20 @@ interface IdeaObj {
   eventdate: string;
 }
 
+interface ParticipantObj {
+  id: string;
+  eventId: string;
+  eventName: string;
+  paidAt?: string;
+  participantFee: number;
+  payOrderId: string;
+  payTransactionId: string;
+  paymentUrl: string;
+  user: any;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface EventObj {
   id: string;
   title: string;
@@ -30,7 +44,7 @@ interface EventObj {
   likes: number;
   ownerId: string;
   participantFee: number;
-  participants: any[];
+  participants: ParticipantObj[];
   endsAt: string;
   photoUrl?: string;
   createdAt: string;
