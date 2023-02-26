@@ -2,7 +2,7 @@ import { useState, ChangeEvent } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import Datetime from 'react-datetime';
-import { Moment } from 'moment';
+import moment, { Moment } from 'moment';
 
 export default function NewEvent() {
   const router = useRouter();
@@ -18,10 +18,18 @@ export default function NewEvent() {
     setDescription(e.currentTarget.value);
   };
   const handleChangeStartAt = (value: Moment | string) => {
-    setStartAt(value.toString());
+    if (typeof value === 'string') {
+      setStartAt(value);
+    } else {
+      setStartAt(value.toISOString());
+    }
   };
   const handleChangeEndsAt = (value: Moment | string) => {
-    setEndAt(value.toString());
+    if (typeof value === 'string') {
+      setEndAt(value);
+    } else {
+      setEndAt(value.toISOString());
+    }
   };
   const handleChangeParticipantFee = (e: ChangeEvent<HTMLInputElement>) => {
     setParticipantFee(e.currentTarget.value);
