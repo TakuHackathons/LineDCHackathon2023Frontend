@@ -24,7 +24,8 @@ interface EventObj {
   likes: number;
   ownerId: string;
   participantFee: number;
-  participants: any[];
+  participants: ParticipantObj[];
+  startAt: string;
   endsAt: string;
   photoUrl?: string;
   createdAt: string;
@@ -33,22 +34,37 @@ interface EventObj {
 
 const Event = (props: any) => {
   const router = useRouter();
-  const [event, setEvent] = useState({});
+  const [event, setEvent] = useState<EventObj>({
+    id: '',
+    title: '',
+    description: '',
+    comments: [],
+    likes: 0,
+    ownerId: '',
+    participantFee: 0,
+    participants: [],
+    startAt: '',
+    endsAt: '',
+    createdAt: '',
+    updatedAt: '',
+  });
 
   const url = process.env.NEXT_PUBLIC_API_ROOT_URL || '';
-  if (router.query.event_id) {
+  if (router.query.event_id && !event.id) {
     axios.get(`${url}/events/${router.query.event_id}`).then((res) => {
       console.log(res.data);
       setEvent(res.data);
     });
   }
 
+  const canPayment = event.participantFee > 0 && event.participants.length > 0;
+
   const handlePaymentSubmit = async () => {
     const url = process.env.NEXT_PUBLIC_API_ROOT_URL || '';
     const headers = {
       authorization: ['Bearer 1234'],
     };
-    if (event.participants) {
+    if (canPayment) {
       router.replace(event.participants[0].paymentUrl);
     }
   };
@@ -105,17 +121,19 @@ const Event = (props: any) => {
       >
         参加する
       </button>
-      <div>
-        <button
-          className='focus:shadow-outline rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700 focus:outline-none'
-          type='button'
-          onClick={() => {
-            handlePaymentSubmit();
-          }}
-        >
-          参加費を支払う
-        </button>
-      </div>
+      {canPayment && (
+        <div>
+          <button
+            className='focus:shadow-outline rounded bg-blue-500 py-2 px-4 font-bold text-white hover:bg-blue-700 focus:outline-none'
+            type='button'
+            onClick={() => {
+              handlePaymentSubmit();
+            }}
+          >
+            参加費を支払う
+          </button>
+        </div>
+      )}
     </>
   );
 };
