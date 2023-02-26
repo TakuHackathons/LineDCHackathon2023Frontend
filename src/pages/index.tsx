@@ -88,7 +88,7 @@ export default class Home extends Component<any, LiffStates> {
             {this.state.events.map((event, index) => {
               return (
                 <li key={event.id} className='p-3 hover:bg-blue-600 hover:text-blue-200'>
-                  {event.title}
+                  <Link href={`/events/${event.id}`}>{event.title}</Link>
                 </li>
               );
             })}
