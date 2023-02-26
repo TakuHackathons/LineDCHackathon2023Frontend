@@ -1,6 +1,8 @@
 import { useState, ChangeEvent } from 'react';
 import { useRouter } from 'next/router';
 import axios from 'axios';
+import Datetime from 'react-datetime';
+import { Moment } from 'moment';
 
 export default function NewEvent() {
   const router = useRouter();
@@ -15,11 +17,11 @@ export default function NewEvent() {
   const handleChangeDescription = (e: ChangeEvent<HTMLInputElement>) => {
     setDescription(e.currentTarget.value);
   };
-  const handleChangeStartAt = (e: ChangeEvent<HTMLInputElement>) => {
-    setStartAt(e.currentTarget.value);
+  const handleChangeStartAt = (value: Moment | string) => {
+    setStartAt(value.toString());
   };
-  const handleChangeEndsAt = (e: ChangeEvent<HTMLInputElement>) => {
-    setEndAt(e.currentTarget.value);
+  const handleChangeEndsAt = (value: Moment | string) => {
+    setEndAt(value.toString());
   };
   const handleChangeParticipantFee = (e: ChangeEvent<HTMLInputElement>) => {
     setParticipantFee(e.currentTarget.value);
@@ -33,7 +35,6 @@ export default function NewEvent() {
       endsAt: new Date(Date.parse(endsAt)).toISOString(),
       participantFee: parseInt(participantFee),
     };
-    console.log(requestBodyObject);
     const url = process.env.NEXT_PUBLIC_API_ROOT_URL || '';
     const headers = {
       authorization: ['Bearer 1234'],
@@ -66,20 +67,24 @@ export default function NewEvent() {
       </div>
       <div className='mb-6'>
         <label className='mb-2 block text-sm font-bold text-gray-700'>開始日時</label>
-        <input
-          className='focus:shadow-outline w-full appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none'
-          id='startAt'
-          type='text'
+        <Datetime
           onChange={handleChangeStartAt}
+          value={startAt}
+          inputProps={{
+            className:
+              'focus:shadow-outline w-full appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none',
+          }}
         />
       </div>
       <div className='mb-6'>
         <label className='mb-2 block text-sm font-bold text-gray-700'>終了日時</label>
-        <input
-          className='focus:shadow-outline w-full appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none'
-          id='endsAt'
-          type='text'
+        <Datetime
           onChange={handleChangeEndsAt}
+          value={endsAt}
+          inputProps={{
+            className:
+              'focus:shadow-outline w-full appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none',
+          }}
         />
       </div>
       <div className='mb-6'>
