@@ -94,9 +94,6 @@ export default class Home extends Component<any, LiffStates> {
   render(): ReactElement<any, string | JSXElementConstructor<any>> | string | number | ReactPortal | boolean | null | undefined {
     return (
       <>
-        <div>idToken:{this.state.idToken}</div>
-        <div>lineContext:{this.state.lineContext}</div>
-        <div>accessToken:{this.state.accessToken}</div>
         <div className='bg-white rounded-lg shadow lg:w-1/3'>
           <h2>アイディア一覧</h2>
           <ul className='divide-y divide-gray-100'>
