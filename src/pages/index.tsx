@@ -3,6 +3,8 @@ import { Component, ReactElement, JSXElementConstructor, ReactPortal } from 'rea
 import { Liff } from '@line/liff';
 import styles from '@/styles/Home.module.css';
 import Link from 'next/link';
+import axios from 'axios';
+
 interface LiffStates {
   idToken: string;
   lineContext: string;
@@ -21,6 +23,7 @@ export default class Home extends Component<any, LiffStates> {
     };
 
     this.loadAccountInfo = this.loadAccountInfo.bind(this);
+    this.loadData = this.loadData.bind(this);
   }
 
   async loadAccountInfo() {
@@ -36,6 +39,7 @@ export default class Home extends Component<any, LiffStates> {
     if (accessToken) {
       this.setState({ accessToken: accessToken });
     }
+    await this.loadData();
   }
 
   componentDidMount() {
@@ -47,28 +51,25 @@ export default class Home extends Component<any, LiffStates> {
     });
   }
 
+  async loadData() {
+    const url = process.env.NEXT_PUBLIC_API_ROOT_URL || '';
+    const eventsResponse = await axios.get(`${url}/events`);
+  }
+
   componentWillUnmount = () => {};
 
   render(): ReactElement<any, string | JSXElementConstructor<any>> | string | number | ReactPortal | boolean | null | undefined {
     return (
       <>
-        <main className={styles.main}>
-          <div>idToken:{this.state.idToken}</div>
-          <div>lineContext:{this.state.lineContext}</div>
-          <div>accessToken:{this.state.accessToken}</div>
-          <ul className='flex'>
-            <li className='mr-3'>
-              <Link
-                href='/newevent'
-                className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 border border-blue-700 rounded'
-              >
-                イベントを作る
-              </Link>
-            </li>
-            <li className='mr-3'></li>
-            <li className='mr-3'></li>
-          </ul>
-        </main>
+        <div>idToken:{this.state.idToken}</div>
+        <div>lineContext:{this.state.lineContext}</div>
+        <div>accessToken:{this.state.accessToken}</div>
+        <ul className='flex'>
+          <li className='mr-3'>
+          </li>
+          <li className='mr-3'></li>
+          <li className='mr-3'></li>
+        </ul>
       </>
     );
   }
