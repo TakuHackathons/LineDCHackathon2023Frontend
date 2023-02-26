@@ -4,12 +4,11 @@ import axios from 'axios';
 import Datetime from 'react-datetime';
 import { Moment } from 'moment';
 
-export default function NewEvent() {
+export default function MakeIdea() {
   const router = useRouter();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [startAt, setStartAt] = useState('');
-  const [endsAt, setEndAt] = useState('');
   const [participantFee, setParticipantFee] = useState('');
   const handleChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     setTitle(e.currentTarget.value);
@@ -24,30 +23,22 @@ export default function NewEvent() {
       setStartAt(value.toISOString());
     }
   };
-  const handleChangeEndsAt = (value: Moment | string) => {
-    if (typeof value === 'string') {
-      setEndAt(value);
-    } else {
-      setEndAt(value.toISOString());
-    }
-  };
   const handleChangeParticipantFee = (e: ChangeEvent<HTMLInputElement>) => {
     setParticipantFee(e.currentTarget.value);
   };
 
   const handleSubmit = async () => {
-    const requestBodyObject = {
-      title: title,
-      description: description,
-      startAt: new Date(Date.parse(startAt)).toISOString(),
-      endsAt: new Date(Date.parse(endsAt)).toISOString(),
-      participantFee: parseInt(participantFee),
-    };
-    const url = process.env.NEXT_PUBLIC_API_ROOT_URL || '';
+    const url = 'https://script.google.com/macros/s/AKfycbyWB8IZfvC_51JX33j1coGzmhUSUl5kDI2_pqzrTPsPeCo4ueTEdLyScVdNtj4DJw1Wog/exec';
     const headers = {
       authorization: ['Bearer 1234'],
     };
-    axios.post(`${url}/events`, requestBodyObject, { headers: headers }).then((response) => {
+    const requestFormData = new FormData();
+    requestFormData.append('eventidea', title);
+    requestFormData.append('eventdate', new Date(Date.parse(startAt)).toISOString());
+    requestFormData.append('eventfee', participantFee);
+    requestFormData.append('eventexpl', description);
+
+    axios.post(url, requestFormData, { headers: headers }).then((response) => {
       console.log(response.data);
       router.push('/');
     });
@@ -65,16 +56,7 @@ export default function NewEvent() {
         />
       </div>
       <div className='mb-6'>
-        <label className='mb-2 block text-sm font-bold text-gray-700'>説明</label>
-        <input
-          className='focus:shadow-outline w-full appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none'
-          id='description'
-          type='text'
-          onChange={handleChangeDescription}
-        />
-      </div>
-      <div className='mb-6'>
-        <label className='mb-2 block text-sm font-bold text-gray-700'>開始日時</label>
+        <label className='mb-2 block text-sm font-bold text-gray-700'>イベントの日時</label>
         <Datetime
           onChange={handleChangeStartAt}
           value={startAt}
@@ -85,18 +67,17 @@ export default function NewEvent() {
         />
       </div>
       <div className='mb-6'>
-        <label className='mb-2 block text-sm font-bold text-gray-700'>終了日時</label>
-        <Datetime
-          onChange={handleChangeEndsAt}
-          value={endsAt}
-          inputProps={{
-            className:
-              'focus:shadow-outline w-full appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none',
-          }}
+        <label className='mb-2 block text-sm font-bold text-gray-700'>イベントの詳細</label>
+        <input
+          className='focus:shadow-outline w-full appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none'
+          id='description'
+          type='text'
+          onChange={handleChangeDescription}
         />
       </div>
+
       <div className='mb-6'>
-        <label className='mb-2 block text-sm font-bold text-gray-700'>参加費</label>
+        <label className='mb-2 block text-sm font-bold text-gray-700'>費用</label>
         <input
           className='focus:shadow-outline w-full appearance-none rounded border py-2 px-3 leading-tight text-gray-700 shadow focus:outline-none'
           id='participantFee'
@@ -110,7 +91,7 @@ export default function NewEvent() {
           type='button'
           onClick={handleSubmit}
         >
-          イベントを作成
+          イベントを作成して投稿する
         </button>
       </div>
     </form>
