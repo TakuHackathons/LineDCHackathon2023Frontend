@@ -5,7 +5,5 @@ module.exports = {
     extend: {},
   },
   plugins: [],
-  content: [
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-}
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
+};
