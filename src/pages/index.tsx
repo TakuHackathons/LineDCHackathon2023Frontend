@@ -3,13 +3,23 @@ import { Component, ReactElement, JSXElementConstructor, ReactPortal } from 'rea
 import { Liff } from '@line/liff';
 import styles from '@/styles/Home.module.css';
 import Link from 'next/link';
-import axios from 'axios';
+import axios from 'axios'
 
 interface LiffStates {
   idToken: string;
   lineContext: string;
   accessToken: string;
+  ideas: IdeaObj[],
   events: EventObj[];
+}
+
+interface IdeaObj {
+  id: number;
+  userId: string;
+  day: string;
+  eventidea: string;
+  eventexpl: string;
+  eventdate: string;
 }
 
 interface EventObj {
@@ -36,6 +46,7 @@ export default class Home extends Component<any, LiffStates> {
       idToken: '',
       lineContext: '',
       accessToken: '',
+      ideas: [],
       events: [],
     };
 
@@ -69,6 +80,8 @@ export default class Home extends Component<any, LiffStates> {
   }
 
   async loadData() {
+    const ideaResponse = await axios.get("https://script.google.com/macros/s/AKfycbwUoVHz1847ipxSlXZyGZVsR31HfnKf8hbZuGLWGX6VTLmfIwi3IcXYe_KkgNgADyZfVg/exec");
+    this.setState({ ideas: ideaResponse.data });
     const url = process.env.NEXT_PUBLIC_API_ROOT_URL || '';
     const eventsResponse = await axios.get(`${url}/events`);
     this.setState({ events: eventsResponse.data });
@@ -83,6 +96,16 @@ export default class Home extends Component<any, LiffStates> {
         <div>lineContext:{this.state.lineContext}</div>
         <div>accessToken:{this.state.accessToken}</div>
         <div className='bg-white rounded-lg shadow lg:w-1/3'>
+        <h2>アイディア一覧</h2>
+          <ul className='divide-y divide-gray-100'>
+            {this.state.ideas.map((idea, index) => {
+              return (
+                <li key={idea.id} className='p-3 hover:bg-blue-600 hover:text-blue-200'>
+                  <Link href={`/events/${idea.id}`}>{idea.eventidea}</Link>
+                </li>
+              );
+            })}
+          </ul>
           <h2>イベント一覧</h2>
           <ul className='divide-y divide-gray-100'>
             {this.state.events.map((event, index) => {
